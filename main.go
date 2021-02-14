@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
+	"github.com/k-murakami0609/nesc/nes"
 	"github.com/notedit/gst"
 	"github.com/pion/webrtc/v3"
 	"github.com/pion/webrtc/v3/pkg/media"
@@ -34,7 +35,8 @@ func generateImageAndPushToPipeLine(pipeline *gst.Pipeline, ki *keyInput) {
 	for {
 		select {
 		case <-t.C:
-			b := generateImage(ki.selector)
+			// TODO: consoleを経由して呼び出す方法に変更する
+			b := nes.GenerateImage(ki.selector)
 			err := element.PushBuffer(b.Bytes())
 
 			if err != nil {

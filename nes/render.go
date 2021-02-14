@@ -1,4 +1,4 @@
-package main
+package nes
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 	"image/jpeg"
 )
 
-func generateImage(selector int) *bytes.Buffer {
+func GenerateImage(selector int) *bytes.Buffer {
 	width := 200
 	height := 100
 
