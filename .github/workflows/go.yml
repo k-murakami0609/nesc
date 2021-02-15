@@ -27,9 +27,9 @@ jobs:
         run: go get
 
       - name: Lint
-        uses: golangci/golangci-lint-action@v2
+        uses: reviewdog/action-golangci-lint@v1
         with:
-          version: v1.29
+          reporter: github-pr-review
 
       - name: Test
         run: go test -v ./...
