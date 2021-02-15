@@ -57,6 +57,7 @@ func parseCharacterRom(file *os.File, h header) []byte {
 	offsetOfCharacterRom := offsetOfProgramRom + programRomSize
 	characterRomSize := characterRomBaseSize * int64(h.ChrSize)
 
+	// test
 	characterRom := make([]byte, characterRomSize)
 	file.ReadAt(characterRom, offsetOfCharacterRom)
 
