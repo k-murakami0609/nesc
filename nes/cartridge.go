@@ -47,7 +47,10 @@ func ParseRom(romPath string) cartridge {
 func parseProgramRom(file *os.File, h header) []byte {
 	offsetOfProgramRom, programRomSize := calcProgramRomOffsetAndSize(h)
 	programRom := make([]byte, programRomSize)
-	file.ReadAt(programRom, offsetOfProgramRom)
+	_, err := file.ReadAt(programRom, offsetOfProgramRom)
+	if err != nil {
+		panic(err)
+	}
 
 	return programRom
 }
@@ -58,7 +61,10 @@ func parseCharacterRom(file *os.File, h header) []byte {
 	characterRomSize := characterRomBaseSize * int64(h.ChrSize)
 
 	characterRom := make([]byte, characterRomSize)
-	file.ReadAt(characterRom, offsetOfCharacterRom)
+	_, err := file.ReadAt(characterRom, offsetOfCharacterRom)
+	if err != nil {
+		panic(err)
+	}
 
 	return characterRom
 }
