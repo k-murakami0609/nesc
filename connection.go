@@ -98,5 +98,8 @@ func createConnection(c *websocket.Conn, videoTrack *webrtc.TrackLocalStaticSamp
 
 	ds := encode(*peerConnection.LocalDescription())
 
-	c.WriteMessage(mt, []byte(ds))
+	err = c.WriteMessage(mt, []byte(ds))
+	if err != nil {
+		panic(err)
+	}
 }

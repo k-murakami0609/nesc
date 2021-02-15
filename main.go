@@ -33,15 +33,13 @@ func generateImageAndPushToPipeLine(pipeline *gst.Pipeline, ki *keyInput) {
 
 	t := time.NewTicker(20 * time.Millisecond)
 	for {
-		select {
-		case <-t.C:
-			// TODO: consoleを経由して呼び出す方法に変更する
-			b := nes.GenerateImage(ki.selector)
-			err := element.PushBuffer(b.Bytes())
+		<-t.C
+		// TODO: consoleを経由して呼び出す方法に変更する
+		b := nes.GenerateImage(ki.selector)
+		err := element.PushBuffer(b.Bytes())
 
-			if err != nil {
-				fmt.Println("push buffer error")
-			}
+		if err != nil {
+			fmt.Println("push buffer error")
 		}
 	}
 }
