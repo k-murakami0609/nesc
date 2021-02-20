@@ -7,17 +7,21 @@ func ExecuteOpration(bus *CpuBus, reg *CpuRegister, opcode Opcode) int {
 	opration := findOpration(opcode)
 	isBranchSuccess := opration(bus, reg, address)
 
+	return sumCycles(opcode, pageCrossed, isBranchSuccess, reg.PC, address)
+}
+
+// http://obelisk.me.uk/6502/reference.html
+func sumCycles(opcode Opcode, pageCrossed bool, isBranchSuccess bool, pc uint16, address uint16) int {
 	cycles := opcode.Cycle
 	if pageCrossed {
 		cycles += opcode.PageCycle
 	}
 	if isBranchSuccess {
 		cycles += 1
-		if pagesDiffer(reg.PC, address) {
+		if pagesDiffer(pc, address) {
 			cycles += 1
 		}
 	}
-
 	return cycles
 }
 
