@@ -7,24 +7,30 @@ func ExecuteOpration(bus *CpuBus, reg *CpuRegister, opcode Opcode) int {
 	opration := findOpration(opcode)
 	isBranchSuccess := opration(bus, reg, address)
 
+	return sumCycles(opcode, pageCrossed, isBranchSuccess, reg.PC, address)
+}
+
+// http://obelisk.me.uk/6502/reference.html
+func sumCycles(opcode Opcode, pageCrossed bool, isBranchSuccess bool, pc uint16, address uint16) int {
 	cycles := opcode.Cycle
 	if pageCrossed {
 		cycles += opcode.PageCycle
 	}
 	if isBranchSuccess {
 		cycles += 1
-		if pagesDiffer(reg.PC, address) {
+		if pagesDiffer(pc, address) {
 			cycles += 1
 		}
 	}
-
 	return cycles
 }
 
+// https://github.com/fogleman/nes/blob/8c4b9cf54c354137c37e8ae17caf4b1b1405313b/nes/cpu.go#L288
 func pagesDiffer(a, b uint16) bool {
 	return a&0xFF00 != b&0xFF00
 }
 
+// http://nesdev.com/NESDoc.pdf#page=39
 func address(bus *CpuBus, reg *CpuRegister, o Opcode) (uint16, bool) {
 	var address uint16 = 0
 	var pageCrossed bool = false
@@ -44,11 +50,11 @@ func address(bus *CpuBus, reg *CpuRegister, o Opcode) (uint16, bool) {
 	case ModeImplied:
 		// nothing
 	case ModeIndexedIndirect:
-		address = bus.Read16(uint16(bus.Read(reg.PC+1) + reg.X))
+		address = bus.Read16bug(uint16(bus.Read(reg.PC+1) + reg.X))
 	case ModeIndirect:
-		address = bus.Read16(bus.Read16(reg.PC + 1))
+		address = bus.Read16bug(bus.Read16(reg.PC + 1))
 	case ModeIndirectIndexed:
-		address = bus.Read16(uint16(bus.Read(reg.PC+1))) + uint16(reg.Y)
+		address = bus.Read16bug(uint16(bus.Read(reg.PC+1))) + uint16(reg.Y)
 		pageCrossed = pagesDiffer(address-uint16(reg.Y), address)
 	case ModeRelative:
 		offset := uint16(bus.Read(reg.PC + 1))
@@ -195,6 +201,7 @@ func findOpration(opcode Opcode) func(*CpuBus, *CpuRegister, uint16) bool {
 	}
 }
 
+// utils
 func checkMSB(target uint8) bool {
 	return target&0x80 != 0
 }
@@ -232,6 +239,8 @@ func compareAndUpdateCZNStatus(bus *CpuBus, reg *CpuRegister, address uint16, ba
 }
 
 // instructions
+// http://obelisk.me.uk/6502/reference.html
+// http://taotao54321.hatenablog.com/entry/2017/04/09/151355
 func adc(bus *CpuBus, reg *CpuRegister, address uint16) {
 	A := reg.A
 	M := bus.Read(address)
@@ -472,7 +481,10 @@ func pha(bus *CpuBus, reg *CpuRegister, address uint16) {
 }
 
 func php(bus *CpuBus, reg *CpuRegister, address uint16) {
-	// ???
+	// TODO: need confirm
+	// This is correct when collated with nestest.log
+	// However, I feel that there is a discrepancy with the description on the wiki ...?
+	// https://wiki.nesdev.com/w/index.php/Status_flags#The_B_flag
 	push(bus, reg, reg.processorStatus()|0x10)
 }
 
@@ -484,8 +496,13 @@ func pla(bus *CpuBus, reg *CpuRegister, address uint16) {
 
 func plp(bus *CpuBus, reg *CpuRegister, address uint16) {
 	pull := pull(bus, reg, address)
-	// ??
-	reg.SetProcessorStatus(pull&0xEF | 0x20)
+	// TODO: need confirm
+	// This is correct when collated with nestest.log
+	// However, I feel that there is a discrepancy with the description on the wiki ...?
+	// https://wiki.nesdev.com/w/index.php/Status_flags#The_B_flag
+	reg.SetProcessorStatus(pull)
+	reg.B = false
+	reg.R = true
 }
 
 func rol(opcode Opcode, bus *CpuBus, reg *CpuRegister, address uint16) {
@@ -520,7 +537,13 @@ func ror(opcode Opcode, bus *CpuBus, reg *CpuRegister, address uint16) {
 
 func rti(bus *CpuBus, reg *CpuRegister, address uint16) {
 	pulled := pull(bus, reg, address)
-	reg.SetProcessorStatus(pulled&0xEF | 0x20)
+	// TODO: need confirm
+	// This is correct when collated with nestest.log
+	// However, I feel that there is a discrepancy with the description on the wiki ...?
+	// https://wiki.nesdev.com/w/index.php/Status_flags#The_B_flag
+	reg.SetProcessorStatus(pulled & 0xEF)
+	reg.B = false
+	reg.R = true
 
 	low := pull(bus, reg, address)
 	high := pull(bus, reg, address)

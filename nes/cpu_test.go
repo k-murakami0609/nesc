@@ -55,7 +55,7 @@ func TestSetProcessorStatus(t *testing.T) {
 // 		panic(err)
 // 	}
 
-// 	for i := 0; i < 5259; i++ {
+// 	for i := 0; i < 5003; i++ {
 // 		_, _ = file.WriteString(console.CPU.Debug())
 // 		console.CPU.Step()
 // 	}

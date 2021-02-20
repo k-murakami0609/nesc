@@ -47,9 +47,14 @@ func (cpu *CPU) Debug() string {
 	if opcode.Size < 3 {
 		w2 = "  "
 	}
-
 	return fmt.Sprintf("%4X  %s %s %s  %s %28s"+
 		"A:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%3d\n",
 		r.PC, w0, w1, w2, opcode.Name, "",
 		r.A, r.X, r.Y, r.processorStatus(), r.SP, (cpu.Cycles*3)%341)
+
+	// address, _ := Address(cpu.bus, &cpu.Register, opcode)
+	// return fmt.Sprintf("%4X  %s %s %s  %s %28s"+
+	// 	"A:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%3d addr:%04X\n",
+	// 	r.PC, w0, w1, w2, opcode.Name, "",
+	// 	r.A, r.X, r.Y, r.processorStatus(), r.SP, (cpu.Cycles*3)%341, address)
 }

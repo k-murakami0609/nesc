@@ -1,5 +1,6 @@
 package nes
 
+// http://nesdev.com/NESDoc.pdf#page=11
 type CpuRegister struct {
 	PC uint16
 	SP byte
