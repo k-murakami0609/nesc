@@ -21,7 +21,7 @@ type header struct {
 	_ [10]byte
 }
 
-type cartridge struct {
+type Cartridge struct {
 	programRom   []byte
 	characterRom []byte
 	// TODO:
@@ -29,7 +29,16 @@ type cartridge struct {
 	// mirror
 }
 
-func ParseRom(romPath string) cartridge {
+func (c Cartridge) Read(address uint16) byte {
+	index := int(address) % len(c.programRom)
+	return c.programRom[index]
+}
+
+func (c Cartridge) Write(address uint16, value byte) {
+	c.programRom[address] = value
+}
+
+func ParseRom(romPath string) *Cartridge {
 	file, err := os.Open(romPath)
 	if err != nil {
 		panic(err)
@@ -41,7 +50,7 @@ func ParseRom(romPath string) cartridge {
 	programRom := parseProgramRom(file, h)
 	characterRom := parseCharacterRom(file, h)
 
-	return cartridge{programRom: programRom, characterRom: characterRom}
+	return &Cartridge{programRom: programRom, characterRom: characterRom}
 }
 
 func parseProgramRom(file *os.File, h header) []byte {
