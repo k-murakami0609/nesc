@@ -44,11 +44,11 @@ func address(bus *CpuBus, reg *CpuRegister, o Opcode) (uint16, bool) {
 	case ModeImplied:
 		// nothing
 	case ModeIndexedIndirect:
-		address = bus.Read16(uint16(bus.Read(reg.PC+1) + reg.X))
+		address = bus.Read16bug(uint16(bus.Read(reg.PC+1) + reg.X))
 	case ModeIndirect:
-		address = bus.Read16(bus.Read16(reg.PC + 1))
+		address = bus.Read16bug(bus.Read16(reg.PC + 1))
 	case ModeIndirectIndexed:
-		address = bus.Read16(uint16(bus.Read(reg.PC+1))) + uint16(reg.Y)
+		address = bus.Read16bug(uint16(bus.Read(reg.PC+1))) + uint16(reg.Y)
 		pageCrossed = pagesDiffer(address-uint16(reg.Y), address)
 	case ModeRelative:
 		offset := uint16(bus.Read(reg.PC + 1))
