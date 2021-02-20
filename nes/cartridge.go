@@ -38,6 +38,8 @@ func (c Cartridge) Write(address uint16, value byte) {
 	c.programRom[address] = value
 }
 
+// http://nesdev.com/NESDoc.pdf#page=28
+// http://wiki.nesdev.com/w/index.php/INES
 func ParseRom(romPath string) *Cartridge {
 	file, err := os.Open(romPath)
 	if err != nil {

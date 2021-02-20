@@ -25,10 +25,12 @@ func sumCycles(opcode Opcode, pageCrossed bool, isBranchSuccess bool, pc uint16,
 	return cycles
 }
 
+// https://github.com/fogleman/nes/blob/8c4b9cf54c354137c37e8ae17caf4b1b1405313b/nes/cpu.go#L288
 func pagesDiffer(a, b uint16) bool {
 	return a&0xFF00 != b&0xFF00
 }
 
+// http://nesdev.com/NESDoc.pdf#page=39
 func address(bus *CpuBus, reg *CpuRegister, o Opcode) (uint16, bool) {
 	var address uint16 = 0
 	var pageCrossed bool = false
@@ -199,6 +201,7 @@ func findOpration(opcode Opcode) func(*CpuBus, *CpuRegister, uint16) bool {
 	}
 }
 
+// utils
 func checkMSB(target uint8) bool {
 	return target&0x80 != 0
 }
@@ -236,6 +239,8 @@ func compareAndUpdateCZNStatus(bus *CpuBus, reg *CpuRegister, address uint16, ba
 }
 
 // instructions
+// http://obelisk.me.uk/6502/reference.html
+// http://taotao54321.hatenablog.com/entry/2017/04/09/151355
 func adc(bus *CpuBus, reg *CpuRegister, address uint16) {
 	A := reg.A
 	M := bus.Read(address)
@@ -476,7 +481,7 @@ func pha(bus *CpuBus, reg *CpuRegister, address uint16) {
 }
 
 func php(bus *CpuBus, reg *CpuRegister, address uint16) {
-	// ???
+	// TODO: need source
 	push(bus, reg, reg.processorStatus()|0x10)
 }
 
@@ -488,7 +493,7 @@ func pla(bus *CpuBus, reg *CpuRegister, address uint16) {
 
 func plp(bus *CpuBus, reg *CpuRegister, address uint16) {
 	pull := pull(bus, reg, address)
-	// ??
+	// TODO: need source
 	reg.SetProcessorStatus(pull&0xEF | 0x20)
 }
 
