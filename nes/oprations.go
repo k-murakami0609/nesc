@@ -481,7 +481,10 @@ func pha(bus *CpuBus, reg *CpuRegister, address uint16) {
 }
 
 func php(bus *CpuBus, reg *CpuRegister, address uint16) {
-	// TODO: need source
+	// TODO: need confirm
+	// This is correct when collated with nestest.log
+	// However, I feel that there is a discrepancy with the description on the wiki ...?
+	// https://wiki.nesdev.com/w/index.php/Status_flags#The_B_flag
 	push(bus, reg, reg.processorStatus()|0x10)
 }
 
@@ -493,8 +496,13 @@ func pla(bus *CpuBus, reg *CpuRegister, address uint16) {
 
 func plp(bus *CpuBus, reg *CpuRegister, address uint16) {
 	pull := pull(bus, reg, address)
-	// TODO: need source
-	reg.SetProcessorStatus(pull&0xEF | 0x20)
+	// TODO: need confirm
+	// This is correct when collated with nestest.log
+	// However, I feel that there is a discrepancy with the description on the wiki ...?
+	// https://wiki.nesdev.com/w/index.php/Status_flags#The_B_flag
+	reg.SetProcessorStatus(pull)
+	reg.B = false
+	reg.R = true
 }
 
 func rol(opcode Opcode, bus *CpuBus, reg *CpuRegister, address uint16) {
@@ -529,7 +537,13 @@ func ror(opcode Opcode, bus *CpuBus, reg *CpuRegister, address uint16) {
 
 func rti(bus *CpuBus, reg *CpuRegister, address uint16) {
 	pulled := pull(bus, reg, address)
-	reg.SetProcessorStatus(pulled&0xEF | 0x20)
+	// TODO: need confirm
+	// This is correct when collated with nestest.log
+	// However, I feel that there is a discrepancy with the description on the wiki ...?
+	// https://wiki.nesdev.com/w/index.php/Status_flags#The_B_flag
+	reg.SetProcessorStatus(pulled & 0xEF)
+	reg.B = false
+	reg.R = true
 
 	low := pull(bus, reg, address)
 	high := pull(bus, reg, address)
