@@ -92,6 +92,7 @@ type Opcode struct {
 var Opcodes = CreateOpcodes()
 
 // http://obelisk.me.uk/6502/reference.html
+// http://wiki.nesdev.com/w/index.php/Programming_with_unofficial_opcodes
 func CreateOpcodes() map[byte]Opcode {
 	opcodes := map[byte]Opcode{}
 
@@ -246,34 +247,7 @@ func CreateOpcodes() map[byte]Opcode {
 	opcodes[0x8A] = Opcode{Name: TXA, Mode: ModeImplied, Code: 0x8A, Cycle: 2, Size: 1, PageCycle: 0}
 	opcodes[0x9A] = Opcode{Name: TXS, Mode: ModeImplied, Code: 0x9A, Cycle: 2, Size: 1, PageCycle: 0}
 	opcodes[0x98] = Opcode{Name: TYA, Mode: ModeImplied, Code: 0x98, Cycle: 2, Size: 1, PageCycle: 0}
-
-	// ??
-	opcodes[0x04] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 2, PageCycle: 0}
-	opcodes[0x14] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 2, PageCycle: 0}
-	opcodes[0x34] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 2, PageCycle: 0}
-	opcodes[0x44] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 2, PageCycle: 0}
-	opcodes[0x54] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 2, PageCycle: 0}
-	opcodes[0x64] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 2, PageCycle: 0}
-	opcodes[0x74] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 2, PageCycle: 0}
-	opcodes[0xD4] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 2, PageCycle: 0}
-	opcodes[0xF4] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 2, PageCycle: 0}
-
-	opcodes[0x1A] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 1, PageCycle: 0}
-	opcodes[0x3A] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 1, PageCycle: 0}
-	opcodes[0x5A] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 1, PageCycle: 0}
-	opcodes[0x7A] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 1, PageCycle: 0}
-	opcodes[0xDA] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 1, PageCycle: 0}
-	opcodes[0xFA] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 1, PageCycle: 0}
-
-	opcodes[0x0C] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 3, PageCycle: 0}
-	opcodes[0x1C] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 3, PageCycle: 0}
-	opcodes[0x3C] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 3, PageCycle: 0}
-	opcodes[0x5C] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 3, PageCycle: 0}
-	opcodes[0x7C] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 3, PageCycle: 0}
-	opcodes[0x80] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 2, PageCycle: 0}
-
-	opcodes[0xDC] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 3, PageCycle: 0}
-	opcodes[0xFC] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 3, PageCycle: 0}
+	opcodes[0xEA] = Opcode{Name: NOP, Mode: ModeImplied, Code: 0xEA, Cycle: 2, Size: 1, PageCycle: 0}
 
 	return opcodes
 }
