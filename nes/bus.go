@@ -3,18 +3,20 @@ package nes
 import "fmt"
 
 type CpuBus struct {
-	console *Console
+	console   *Console
+	cartridge *Cartridge
+	ram       [0x0800]byte
 }
 
-func NewCpuBus(console *Console) *CpuBus {
-	return &CpuBus{console: console}
+func NewCpuBus(console *Console, cartridge *Cartridge) *CpuBus {
+	return &CpuBus{console: console, cartridge: cartridge}
 }
 
 // http://nesdev.com/NESDoc.pdf#page=11
 func (cpuBus *CpuBus) Write(address uint16, value byte) {
 	switch {
 	case address < 0x2000:
-		cpuBus.console.RAM[address%0x0800] = value
+		cpuBus.ram[address%0x0800] = value
 		return
 	case address < 0x4000:
 		cpuBus.console.PpuBus.Write(address, value)
@@ -26,7 +28,7 @@ func (cpuBus *CpuBus) Write(address uint16, value byte) {
 		cpuBus.console.PpuBus.Write(address, value)
 		return
 	case address >= 0x8000:
-		cpuBus.console.Cartridge.WriteProgramRom(address-0x8000, value)
+		cpuBus.cartridge.WriteProgramRom(address-0x8000, value)
 		return
 	}
 
@@ -37,11 +39,11 @@ func (cpuBus *CpuBus) Write(address uint16, value byte) {
 func (cpuBus *CpuBus) Read(address uint16) byte {
 	switch {
 	case address < 0x2000:
-		return cpuBus.console.RAM[address%0x0800]
+		return cpuBus.ram[address%0x0800]
 	case address < 0x4000:
 		return cpuBus.console.PpuBus.Read(address)
 	case address >= 0x8000:
-		return cpuBus.console.Cartridge.ReadProgramRom(address - 0x8000)
+		return cpuBus.cartridge.ReadProgramRom(address - 0x8000)
 	}
 
 	fmt.Printf("cant read address: %04X", address)

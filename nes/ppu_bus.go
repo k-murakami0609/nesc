@@ -2,13 +2,18 @@ package nes
 
 // TODO: rethink name
 type PpuBus struct {
-	console *Console
+	console   *Console
+	cartridge *Cartridge
 
 	nameTables       [0x1F00]byte
 	backgroudPalette [0x10]byte
 	spritePalette    [0x10]byte
 
 	spriteRAM [0x100]byte
+}
+
+func NewPpuBus(console *Console, cartridge *Cartridge) *PpuBus {
+	return &PpuBus{console: console, cartridge: cartridge}
 }
 
 // http://nesdev.com/NESDoc.pdf#page=34
@@ -62,7 +67,7 @@ func (bus *PpuBus) readData() byte {
 	switch {
 	case addr <= 0x2000:
 		// TODO: confirm 0x1000?
-		return bus.console.Cartridge.ReadCharacterRom(addr % 0x1000)
+		return bus.cartridge.ReadCharacterRom(addr % 0x1000)
 	case addr <= 0x3F00:
 		index := addr - 0x2000
 		return bus.nameTables[index]
@@ -91,7 +96,7 @@ func (bus *PpuBus) writeData(value byte) {
 	switch {
 	case addr <= 0x2000:
 		// TODO: confirm 0x1000?
-		bus.console.Cartridge.WriteCharacterRom(addr%0x1000, value)
+		bus.cartridge.WriteCharacterRom(addr%0x1000, value)
 		return
 	case addr <= 0x3F00:
 		index := addr - 0x2000
