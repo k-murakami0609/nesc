@@ -16,8 +16,17 @@ func (cpuBus *CpuBus) Write(address uint16, value byte) {
 	case address < 0x2000:
 		cpuBus.console.RAM[address%0x0800] = value
 		return
+	case address < 0x4000:
+		cpuBus.console.PpuBus.Write(address, value)
+		return
+	case address < 0x4013:
+		// ???
+		return
+	case address < 0x4014:
+		cpuBus.console.PpuBus.Write(address, value)
+		return
 	case address >= 0x8000:
-		cpuBus.console.Cartridge.Write(address-0x8000, value)
+		cpuBus.console.Cartridge.WriteProgramRom(address-0x8000, value)
 		return
 	}
 
@@ -29,8 +38,10 @@ func (cpuBus *CpuBus) Read(address uint16) byte {
 	switch {
 	case address < 0x2000:
 		return cpuBus.console.RAM[address%0x0800]
+	case address < 0x4000:
+		return cpuBus.console.PpuBus.Read(address)
 	case address >= 0x8000:
-		return cpuBus.console.Cartridge.Read(address - 0x8000)
+		return cpuBus.console.Cartridge.ReadProgramRom(address - 0x8000)
 	}
 
 	fmt.Printf("cant read address: %04X", address)

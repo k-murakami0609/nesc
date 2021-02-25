@@ -29,13 +29,22 @@ type Cartridge struct {
 	// mirror
 }
 
-func (c Cartridge) Read(address uint16) byte {
+func (c Cartridge) ReadProgramRom(address uint16) byte {
 	index := int(address) % len(c.programRom)
 	return c.programRom[index]
 }
 
-func (c Cartridge) Write(address uint16, value byte) {
+func (c Cartridge) WriteProgramRom(address uint16, value byte) {
 	c.programRom[address] = value
+}
+
+func (c Cartridge) ReadCharacterRom(address uint16) byte {
+	index := int(address) % len(c.characterRom)
+	return c.characterRom[index]
+}
+
+func (c Cartridge) WriteCharacterRom(address uint16, value byte) {
+	c.characterRom[address] = value
 }
 
 // http://nesdev.com/NESDoc.pdf#page=28

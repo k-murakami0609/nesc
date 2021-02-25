@@ -5,6 +5,8 @@ type Console struct {
 	Cartridge *Cartridge
 	RAM       [0x0800]byte
 	CpuBus    *CpuBus
+	PPU       *PPU
+	PpuBus    *PpuBus
 }
 
 func NewConsole(path string) *Console {
@@ -14,5 +16,6 @@ func NewConsole(path string) *Console {
 	}
 	console.CpuBus = NewCpuBus(&console)
 	console.CPU = NewCPU(console.CpuBus)
+	console.PPU = NewPPU(&console)
 	return &console
 }
