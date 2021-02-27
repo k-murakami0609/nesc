@@ -31,8 +31,7 @@ func (reg *CpuRegister) SetProcessorStatus(s uint8) {
 // 7, 6, 5, 4, 3, 2, 1, 0
 // N, V, R, B, D, I, Z, C
 func (reg *CpuRegister) processorStatus() uint8 {
-	var result uint8 = 0
-	bits := []bool{
+	return BoolArrayToUint8([8]bool{
 		reg.C,
 		reg.Z,
 		reg.I,
@@ -41,13 +40,5 @@ func (reg *CpuRegister) processorStatus() uint8 {
 		reg.R,
 		reg.V,
 		reg.N,
-	}
-
-	for i := 0; i < 8; i++ {
-		if bits[i] {
-			result |= 1 << i
-		}
-	}
-
-	return result
+	})
 }
