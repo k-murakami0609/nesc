@@ -60,24 +60,37 @@ func (bus *PpuBus) Write(address uint16, value byte) {
 	}
 }
 
+func (bus *PpuBus) ReadCharacter(index int) ([8]byte, [8]byte) {
+	var character1 [8]byte
+	var character2 [8]byte
+	offset := index * 16
+	for i := 0; i < 8; i++ {
+		character1[i] = bus.cartridge.ReadCharacterRom(uint16(offset + i))
+	}
+	for i := 8; i < 16; i++ {
+		character2[i-8] = bus.cartridge.ReadCharacterRom(uint16(offset + i))
+	}
+	return character1, character2
+}
+
 func (bus *PpuBus) readData() byte {
 	addr := bus.console.PPU.Register.PpuAddress
 	bus.console.PPU.Register.PpuAddress += 1
 
 	switch {
-	case addr <= 0x2000:
+	case addr < 0x2000:
 		// TODO: confirm 0x1000?
 		return bus.cartridge.ReadCharacterRom(addr % 0x1000)
-	case addr <= 0x3F00:
+	case addr < 0x3F00:
 		index := addr - 0x2000
 		return bus.nameTables[index]
-	case addr <= 0x3F10:
+	case addr < 0x3F10:
 		index := addr - 0x3F00
 		return bus.backgroudPalette[index]
-	case addr <= 0x3F20:
+	case addr < 0x3F20:
 		index := addr - 0x3F10
 		return bus.spritePalette[index]
-	case addr <= 0x4000:
+	case addr < 0x4000:
 		// TODO: mirror
 		panic("ppu readData mirror")
 	default:
@@ -94,21 +107,21 @@ func (bus *PpuBus) writeData(value byte) {
 	}
 
 	switch {
-	case addr <= 0x2000:
+	case addr < 0x2000:
 		// TODO: confirm 0x1000?
 		bus.cartridge.WriteCharacterRom(addr%0x1000, value)
 		return
-	case addr <= 0x3F00:
+	case addr < 0x3F00:
 		index := addr - 0x2000
 		bus.nameTables[index] = value
 		return
-	case addr <= 0x3F10:
+	case addr < 0x3F10:
 		index := addr - 0x3F00
 		bus.backgroudPalette[index] = value
-	case addr <= 0x3F20:
+	case addr < 0x3F20:
 		index := addr - 0x3F10
 		bus.spritePalette[index] = value
-	case addr <= 0x4000:
+	case addr < 0x4000:
 		// TODO: mirror
 		panic("ppu writeData mirror")
 	default:

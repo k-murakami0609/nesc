@@ -31,11 +31,11 @@ var upgrader = websocket.Upgrader{} // use default options
 func generateImageAndPushToPipeLine(pipeline *gst.Pipeline, ki *keyInput) {
 	element := pipeline.GetByName("mysource")
 
+	console := nes.NewConsole("./nes/roms/sample1.nes")
 	t := time.NewTicker(20 * time.Millisecond)
 	for {
 		<-t.C
-		// TODO: consoleを経由して呼び出す方法に変更する
-		b := nes.GenerateImage(ki.selector)
+		b := console.Run()
 		err := element.PushBuffer(b.Bytes())
 
 		if err != nil {

@@ -23,11 +23,13 @@ func (cpu *CPU) Reset() {
 	cpu.Register.SetProcessorStatus(0x24)
 }
 
-func (cpu *CPU) Step() {
+func (cpu *CPU) Step() int {
 	opcode := cpu.nextOpcode()
 
 	cycles := ExecuteOpration(cpu.bus, &cpu.Register, opcode)
 	cpu.Cycles += cycles
+
+	return cycles
 }
 
 func (cpu *CPU) nextOpcode() Opcode {
